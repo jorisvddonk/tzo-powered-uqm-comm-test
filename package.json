@@ -1,0 +1,26 @@
+{
+  "name": "anim-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "build": "ts-node build_vm_code.ts",
+    "go": "npm run build && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dtsgen": "dts-gen -m raylib -f ./node_modules/raylib/index.d.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "raylib": "^0.6.0",
+    "tzo": "^1.0.0",
+    "uqm-files-parsers": "^1.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.11.2",
+    "dts-gen": "^0.6.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
+  }
+}

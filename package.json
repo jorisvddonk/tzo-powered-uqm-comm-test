@@ -11,7 +11,7 @@
     "dtsgen": "dts-gen -m raylib -f ./node_modules/raylib/index.d.ts"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "raylib": "^0.6.0",
     "tzo": "^1.0.0",

@@ -48,7 +48,7 @@ const interv = setInterval(() => {
 
     // Draw alien comm screen:
     tvm.run(); // resume VM! This will draw the next frame...
-    
+
     // Draw alien conversation and player options:
     r.DrawTextRec(font, cvm.getDisplayText(), r.Rectangle(5, 5, r.GetScreenWidth() - 5, r.GetScreenHeight() - 5), 25, -2, true, r.WHITE);
     if (cvm.canRespond) {
@@ -59,8 +59,11 @@ const interv = setInterval(() => {
 
     // Debug drawing: 
     if (debug) {
-      r.DrawText(JSON.stringify(tvm.context, null, 2), 20, 1, 5, r.GRAY);
-      r.DrawText(JSON.stringify(cvm.context, null, 2), 400, 1, 5, r.GRAY);
+      r.DrawText(JSON.stringify(tvm.context, null, 2), 20, 1, 5, r.WHITE);
+      r.DrawText(JSON.stringify(cvm.context, null, 2), 400, 1, 5, r.WHITE);
+
+      r.DrawText(JSON.stringify(tvm.stack), 20, 400, 5, r.WHITE);
+      r.DrawText(JSON.stringify(cvm.stack), 400, 400, 5, r.WHITE);
     }
 
     r.EndDrawing();

@@ -15,7 +15,7 @@
   "dependencies": {
     "questmark": "0.0.5",
     "raylib": "^0.6.0",
-    "tzo": "^1.0.3",
+    "tzo": "^1.0.4",
     "uqm-files-parsers": "^1.0.3"
   },
   "devDependencies": {

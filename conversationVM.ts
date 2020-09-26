@@ -42,9 +42,9 @@ export class ConversationVM extends QuestVM {
     }
   }
 
-  localize (input: string | number) {
+  localize(input: string | number) {
     let s = `${input}`;
-    const t = this.translations.get(s);
+    const t = this.translations.get(s.trim());
     if (t) {
       s = t.localizedText.toString();
     }

@@ -11,13 +11,14 @@ const screenWidth = 800;
 const screenHeight = 450;
 r.InitWindow(screenWidth, screenHeight, "Tzo powered Animation Test");
 r.SetTargetFPS(30);
+r.InitAudioDevice();
 
 const tvm = new TextureVM(r, base);
 tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMState);
 tvm.run(); // start initiation process!
 
 let debug = false;
-const cvm = new ConversationVM(`./speech.json`, `${base}/${alien_name}.txt`);
+const cvm = new ConversationVM(r, `./speech.json`, `${base}/${alien_name}.txt`, `${base}/${alien_name}.ts`);
 const font = r.LoadFont('./res/good_neighbors_xna_0.png'); // from https://opengameart.org/content/good-neighbors-pixel-font, Public Domain
 
 const interv = setInterval(() => {
@@ -58,6 +59,7 @@ const interv = setInterval(() => {
     r.EndDrawing();
   } else {
     clearInterval(interv);
-    r.CloseWindow()        // Close window and OpenGL context
+    r.CloseWindow();        // Close window and OpenGL context
+    r.CloseAudioDevice();
   }
 }, 0);

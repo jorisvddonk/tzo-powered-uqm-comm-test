@@ -43,9 +43,9 @@ const interv = setInterval(() => {
     tvm.run(); // resume VM! This will draw the next frame...
 
     // Draw alien conversation and player options:
-    r.DrawText(cvm.displayString, 300, 10, 10, r.BLUE);
+    r.DrawText(cvm.displayString, 5, 5, 15, r.BLUE);
     cvm.options.forEach((o, i) => {
-      r.DrawText(`${i} - ${cvm.localize(o.title)}`, 300, 300 + (i * 20), 10, cvm.selectedOptionIndex === i ? r.RED : r.BLUE);
+      r.DrawText(`${cvm.localize(o.title)}`, 10, r.GetScreenHeight() - (cvm.options.length * 20) + (i * 20), 20, cvm.selectedOptionIndex === i ? r.RED : r.BLUE);
     });
 
     // Debug drawing: 

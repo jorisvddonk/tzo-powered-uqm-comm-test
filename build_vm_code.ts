@@ -1,8 +1,9 @@
-import { invokeFunction, pushNumber, pushString } from "tzo";
+import { Instruction, invokeFunction, pushNumber, pushString } from "tzo";
 import { parseGraphics } from "uqm-files-parsers";
 import { Builder } from "./builder";
 import fs from "fs";
 import { Animation, AnimationFrame, AnimationType } from "uqm-files-parsers/dist/interfaces";
+import "array-flat-polyfill";
 
 const base = "./asking-about-flowers/comm/spathi";
 const graphics = parseGraphics(fs.readFileSync(`${base}/spathi.ani`).toString());
@@ -24,6 +25,9 @@ graphics.animations.forEach(anim => {
   b.add([
     pushNumber(0),
     pushString(`anim_${anim.name}_index`),
+    invokeFunction("setContext"),
+    pushNumber(anim.type === AnimationType.BACKGROUND ? 1 : 0),
+    pushString(`anim_${anim.name}_active`),
     invokeFunction("setContext")
   ]);
   if (anim.type === AnimationType.YO_YO) {
@@ -48,6 +52,28 @@ b.add([
 
 // main animation loop's CONTROL FUNCTIONS:
 graphics.animations.forEach(anim => {
+  // Begin by checking the activity of other (exclusive) animations
+  b.add([pushNumber(0)]);
+  b.add(anim.do_not_play_when_other_anim.map((blockingAnimName, i) => {
+    const r: Instruction[] = [
+      pushString(`anim_${blockingAnimName}_active`),
+      invokeFunction("getContext"),
+      pushNumber(1),
+      invokeFunction("eq"),
+      invokeFunction("or")
+    ];
+    return r;
+  }).flat(1));
+  b.add([
+    invokeFunction("not"),
+    invokeFunction("jgz"),
+    invokeFunction("{"),
+    pushNumber(1), // if we make it here, we got to set the animation active again!
+    pushString(`anim_${anim.name}_active`),
+    invokeFunction("setContext"),
+  ]);
+
+
   if (anim.type === AnimationType.CIRCULAR) {
     // add to the index until we reach the end, then loop back to 0!
     b.add([
@@ -121,6 +147,8 @@ graphics.animations.forEach(anim => {
       invokeFunction("setContext"),
     ])
   }
+
+  b.add([invokeFunction("}")]); // end exclusive animation activity check
 });
 
 // main animation loop's DISPLAY FUNCTIONS:

@@ -10,7 +10,7 @@ const base = `./asking-about-flowers/comm/${alien_name}`;
 const screenWidth = 800;
 const screenHeight = 450;
 r.InitWindow(screenWidth, screenHeight, "Tzo powered Animation Test");
-r.SetTargetFPS(16);
+r.SetTargetFPS(30);
 
 const tvm = new TextureVM(r, base);
 tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMState);

@@ -48,7 +48,7 @@ while (!r.WindowShouldClose()) {
   r.BeginDrawing();
   r.ClearBackground(r.RAYWHITE);
   vm.run(); // resume VM! This will draw the next frame...
-  r.DrawText(JSON.stringify(vm.context, null, 2), 20, 20, 20, r.BLACK)
+  r.DrawText(JSON.stringify(vm.context, null, 2), 20, 20, 5, r.BLACK)
   r.EndDrawing()
 }
 r.CloseWindow()        // Close window and OpenGL context

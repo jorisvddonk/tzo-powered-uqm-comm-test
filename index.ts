@@ -21,6 +21,9 @@ let debug = false;
 const cvm = new ConversationVM(r, `./speech.json`, `${base}/${alien_name}.txt`, `${base}/${alien_name}.ts`);
 const font = r.LoadFont('./res/good_neighbors_xna_0.png'); // from https://opengameart.org/content/good-neighbors-pixel-font, Public Domain
 
+const music = r.LoadMusicStream(`${base}/${alien_name}.mod`);
+r.PlayMusicStream(music);
+
 const interv = setInterval(() => {
   if (!r.WindowShouldClose()) {
     if (r.IsKeyPressed(r.KEY_D)) {
@@ -41,9 +44,9 @@ const interv = setInterval(() => {
     r.BeginDrawing();
     r.ClearBackground(r.BLACK);
 
+    r.UpdateMusicStream(music)
     // Draw alien comm screen:
     tvm.run(); // resume VM! This will draw the next frame...
-
     // Draw alien conversation and player options:
     r.DrawTextEx(font, cvm.displayString, r.Vector2(5, 5), 25, -2, r.WHITE);
     cvm.options.forEach((o, i) => {

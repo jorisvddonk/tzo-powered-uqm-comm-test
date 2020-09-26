@@ -94,6 +94,7 @@ export class ConversationVM extends QuestVM {
           o += sync.timings[i];
           return {
             text: line,
+            lineEndsAt: i < lines.length - 1 ? o : undefined
           }
         });
       } else {

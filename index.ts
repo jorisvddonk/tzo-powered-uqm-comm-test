@@ -3,9 +3,11 @@ import { getStackParams, Stack, TzoVMState, VM } from "tzo";
 import fs from "fs";
 import { TextureVM } from "./textureVM";
 import { QuestVM } from "questmark";
+import { parseTextLocalizationFile } from "uqm-files-parsers";
 
 
-const base = "./asking-about-flowers/comm/spathi";
+const alien_name = "spathi";
+const base = `./asking-about-flowers/comm/${alien_name}`;
 const screenWidth = 800;
 const screenHeight = 450;
 r.InitWindow(screenWidth, screenHeight, "Tzo powered Animation Test");
@@ -16,7 +18,15 @@ tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMSt
 tvm.run(); // start initiation process!
 
 let displayString = "";
-const qvm = new QuestVM((body => displayString = `${displayString}${body}`), async choices => {
+const translations = parseTextLocalizationFile(fs.readFileSync(`${base}/${alien_name}.txt`).toString());
+const qvm = new QuestVM((body => {
+  let s = `${body}`;
+  const t = translations.get(s);
+  if (t) {
+    s = t.localizedText.toString();
+  }
+  displayString = `${displayString}${s}`
+}), async choices => {
   return new Promise((resolve, reject) => {
     // TODO: implement.
   });

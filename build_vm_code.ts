@@ -68,6 +68,17 @@ graphics.animations.forEach(anim => {
     invokeFunction("not"),
     invokeFunction("jgz"),
     invokeFunction("{"),
+    // randomly enable the animation
+    // TODO: actually use the animation timing and scheduler here!
+    pushNumber(2),
+    invokeFunction('randInt'),
+    pushNumber(1),
+    invokeFunction("eq"),
+    pushString(`anim_${anim.name}_active`),
+    invokeFunction("getContext"),
+    invokeFunction("or"),
+    invokeFunction("jgz"),
+    invokeFunction("{"),
     pushNumber(1), // if we make it here, we got to set the animation active again!
     pushString(`anim_${anim.name}_active`),
     invokeFunction("setContext"),
@@ -85,6 +96,9 @@ graphics.animations.forEach(anim => {
       invokeFunction("{"),
       pushNumber(-1), // reset to -1 (will be incremented to 0 later)
       pushString(`anim_${anim.name}_index`),
+      invokeFunction("setContext"),
+      pushNumber(0), // disable animation
+      pushString(`anim_${anim.name}_active`),
       invokeFunction("setContext"),
       invokeFunction("}"),
       pushNumber(1), // increment by one
@@ -136,6 +150,9 @@ graphics.animations.forEach(anim => {
       pushNumber(1), // reverse
       pushString(`anim_${anim.name}_yy_direction`),
       invokeFunction("setContext"),
+      pushNumber(0), // disable animation (only when the yo-yo finished)
+      pushString(`anim_${anim.name}_active`),
+      invokeFunction("setContext"),
       invokeFunction("}"),
       // add yy direction to index
       pushString(`anim_${anim.name}_yy_direction`),
@@ -148,7 +165,10 @@ graphics.animations.forEach(anim => {
     ])
   }
 
-  b.add([invokeFunction("}")]); // end exclusive animation activity check
+  b.add([
+    invokeFunction("}"),
+    invokeFunction("}") // end exclusive animation activity check
+  ]); 
 });
 
 // main animation loop's DISPLAY FUNCTIONS:

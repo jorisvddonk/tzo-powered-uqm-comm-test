@@ -37,6 +37,7 @@ export class TextureVM extends VM {
   }
 
   drawTex(t: Texture) {
-    this.r.DrawTexture(t.tex, (this.r.GetScreenWidth() * 0.5) - t.hotspot_x, (this.r.GetScreenHeight() * 0.5) - t.hotspot_y, this.r.WHITE);
+    const scale = 3;
+    this.r.DrawTextureEx(t.tex, this.r.Vector2(0 - (t.hotspot_x * scale), 0 - (t.hotspot_y * scale)), 0, scale, this.r.WHITE);
   }
 }

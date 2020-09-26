@@ -37,7 +37,7 @@ const interv = setInterval(() => {
     }
 
     r.BeginDrawing();
-    r.ClearBackground(r.RAYWHITE);
+    r.ClearBackground(r.BLACK);
 
     // Draw alien comm screen:
     tvm.run(); // resume VM! This will draw the next frame...

@@ -174,6 +174,12 @@ graphics.animations.forEach(anim => {
 // main animation loop's DISPLAY FUNCTIONS:
 function displayImageMaybe(anim: Animation, frame: AnimationFrame) { // convenience function
   b.add([
+    pushString(`anim_${anim.name}_active`),
+    invokeFunction("getContext"),
+    pushNumber(1),
+    invokeFunction("eq"),
+    invokeFunction("jgz"),
+    invokeFunction("{"),
     pushString(`anim_${anim.name}_index`),
     invokeFunction("getContext"),
     pushNumber(anim.frames.indexOf(frame)),
@@ -182,6 +188,7 @@ function displayImageMaybe(anim: Animation, frame: AnimationFrame) { // convenie
     invokeFunction("{"),
     pushNumber(frame.frame_index),
     invokeFunction("drawFrame"),
+    invokeFunction("}"),
     invokeFunction("}"),
   ]);
 }

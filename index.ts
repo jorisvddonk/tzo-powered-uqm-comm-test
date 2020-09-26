@@ -8,7 +8,7 @@ interface Texture {
   hotspot_y: number
 }
 
-const base = "./asking-about-flowers/comm/chmmr";
+const base = "./asking-about-flowers/comm/spathi";
 const textures: Texture[] = []
 const vm = new VM({}, {
   "loadImage": (stack: Stack) => {

@@ -4,8 +4,8 @@ import { Builder } from "./builder";
 import fs from "fs";
 import { Animation, AnimationFrame, AnimationType } from "uqm-files-parsers/dist/interfaces";
 
-const base = "./asking-about-flowers/comm/chmmr";
-const graphics = parseGraphics(fs.readFileSync(`${base}/chmmr.ani`).toString());
+const base = "./asking-about-flowers/comm/spathi";
+const graphics = parseGraphics(fs.readFileSync(`${base}/spathi.ani`).toString());
 
 const b = new Builder();
 

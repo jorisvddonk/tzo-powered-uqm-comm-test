@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "raylib": "^0.6.0",
-    "tzo": "^1.0.1",
+    "tzo": "^1.0.2",
     "uqm-files-parsers": "^1.0.3"
   },
   "devDependencies": {

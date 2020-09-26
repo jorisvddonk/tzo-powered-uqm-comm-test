@@ -6,12 +6,14 @@
   "scripts": {
     "start": "ts-node index.ts",
     "build": "ts-node build_vm_code.ts",
+    "build-speech": "questmark --input asking-about-flowers/questmark_comm/spathi2.md --output ./speech.json --no-run",
     "go": "npm run build && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "questmark": "0.0.5",
     "raylib": "^0.6.0",
     "tzo": "^1.0.3",
     "uqm-files-parsers": "^1.0.3"

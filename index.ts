@@ -17,7 +17,7 @@ tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMSt
 tvm.run(); // start initiation process!
 
 let debug = false;
-const cvm = new ConversationVM(`${base}/${alien_name}.txt`);
+const cvm = new ConversationVM(`./speech.json`, `${base}/${alien_name}.txt`);
 
 const interv = setInterval(() => {
   if (!r.WindowShouldClose()) {

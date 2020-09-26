@@ -10,7 +10,7 @@ export class ConversationVM extends QuestVM {
   selectedOptionIndex = 0;
   translations = null;
 
-  constructor(translationsFilePath) {
+  constructor(conversationVMPath: string, translationsFilePath: string) {
     super((body => {
       this.displayString = `${this.displayString}${this.localize(body)}`
     }), async choices => {
@@ -21,7 +21,7 @@ export class ConversationVM extends QuestVM {
       });
     });
     this.translations = parseTextLocalizationFile(fs.readFileSync(translationsFilePath).toString());
-    this.loadVMState(JSON.parse(fs.readFileSync("./speech.json").toString()) as TzoVMState);
+    this.loadVMState(JSON.parse(fs.readFileSync(conversationVMPath).toString()) as TzoVMState);
     this.run();
   }
 

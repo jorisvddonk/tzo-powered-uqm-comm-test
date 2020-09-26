@@ -11,15 +11,18 @@ First, ensure you have all dependencies installed
 
 `npm ci`
 
-Next, parse the UQM animation file and build the Tzo VM code:
+Next, parse the UQM animation file and build the Tzo VM codes:
 
-`npm run build`
+```
+npm run build
+npm run build-speech
+```
 
 Finally, run the interpreter!
 
 `npm start`
 
-(alternatively, during development, you can generate the VM code and run the interpreter via `npm run go`)
+(alternatively, during development, you can generate the VM codes and run the interpreter via `npm run go`)
 
 If everything goes well, you'll see the following:
 

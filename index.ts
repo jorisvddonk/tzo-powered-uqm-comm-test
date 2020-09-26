@@ -2,8 +2,7 @@ import r from "raylib";
 import { getStackParams, Stack, TzoVMState, VM } from "tzo";
 import fs from "fs";
 import { TextureVM } from "./textureVM";
-import { QuestVM, Choice } from "questmark";
-import { parseTextLocalizationFile } from "uqm-files-parsers";
+import { ConversationVM } from "./conversationVM";
 
 
 const alien_name = "spathi";
@@ -18,31 +17,7 @@ tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMSt
 tvm.run(); // start initiation process!
 
 let debug = false;
-
-let displayString = "";
-let options: Choice[] = [];
-let optionPromiseCallback: (number) => void = null;
-let selectedOptionIndex = 0;
-const translations = parseTextLocalizationFile(fs.readFileSync(`${base}/${alien_name}.txt`).toString());
-const localize = (input: string | number) => {
-  let s = `${input}`;
-  const t = translations.get(s);
-  if (t) {
-    s = t.localizedText.toString();
-  }
-  return s;
-}
-const qvm = new QuestVM((body => {
-  displayString = `${displayString}${localize(body)}`
-}), async choices => {
-  options = choices;
-  selectedOptionIndex = 0;
-  return new Promise((resolve) => {
-    optionPromiseCallback = resolve;
-  });
-});
-qvm.loadVMState(JSON.parse(fs.readFileSync("./speech.json").toString()) as TzoVMState);
-qvm.run();
+const cvm = new ConversationVM(`${base}/${alien_name}.txt`);
 
 const interv = setInterval(() => {
   if (!r.WindowShouldClose()) {
@@ -51,31 +26,34 @@ const interv = setInterval(() => {
     }
 
     if (r.IsKeyPressed(r.KEY_DOWN)) {
-      selectedOptionIndex += 1;
+      cvm.selectNextOption();
     }
     if (r.IsKeyPressed(r.KEY_UP)) {
-      selectedOptionIndex -= 1;
+      cvm.selectPreviousOption();
     }
-    selectedOptionIndex = Math.max(0, Math.min(selectedOptionIndex, options.length - 1));
 
     if (r.IsKeyPressed(r.KEY_ENTER) || r.IsKeyPressed(r.KEY_SPACE)) {
-      if (optionPromiseCallback !== null) {
-        displayString = "";
-        optionPromiseCallback(options[selectedOptionIndex].id);
-      }
+      cvm.commitToSelectedOption();
     }
 
     r.BeginDrawing();
     r.ClearBackground(r.RAYWHITE);
+
+    // Draw alien comm screen:
     tvm.run(); // resume VM! This will draw the next frame...
-    r.DrawText(displayString, 300, 10, 10, r.BLUE);
-    options.forEach((o, i) => {
-      r.DrawText(`${i} - ${localize(o.title)}`, 300, 300 + (i * 20), 10, selectedOptionIndex === i ? r.RED : r.BLUE);
+
+    // Draw alien conversation and player options:
+    r.DrawText(cvm.displayString, 300, 10, 10, r.BLUE);
+    cvm.options.forEach((o, i) => {
+      r.DrawText(`${i} - ${cvm.localize(o.title)}`, 300, 300 + (i * 20), 10, cvm.selectedOptionIndex === i ? r.RED : r.BLUE);
     });
+
+    // Debug drawing: 
     if (debug) {
       r.DrawText(JSON.stringify(tvm.context, null, 2), 20, 1, 5, r.GRAY);
-      r.DrawText(JSON.stringify(qvm.context, null, 2), 400, 1, 5, r.GRAY);
+      r.DrawText(JSON.stringify(cvm.context, null, 2), 400, 1, 5, r.GRAY);
     }
+
     r.EndDrawing();
   } else {
     clearInterval(interv);

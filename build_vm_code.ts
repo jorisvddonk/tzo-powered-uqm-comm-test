@@ -61,6 +61,14 @@ graphics.animations.forEach(anim => {
       pushString(`anim_${anim.name}_index`),
       invokeFunction("setContext"),
     ])
+  } else if (anim.type === AnimationType.RANDOM) {
+    // randomly update the index
+    b.add([
+      pushNumber(anim.frames.length),
+      invokeFunction('randInt'),
+      pushString(`anim_${anim.name}_index`),
+      invokeFunction("setContext")
+    ])
   }
 });
 

@@ -17,6 +17,8 @@ const tvm = new TextureVM(r, base);
 tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMState);
 tvm.run(); // start initiation process!
 
+let debug = false;
+
 let displayString = "";
 let options: Choice[] = [];
 let optionPromiseCallback: (number) => void = null;
@@ -44,6 +46,10 @@ qvm.run();
 
 const interv = setInterval(() => {
   if (!r.WindowShouldClose()) {
+    if (r.IsKeyPressed(r.KEY_D)) {
+      debug = !debug;
+    }
+
     if (r.IsKeyPressed(r.KEY_DOWN)) {
       selectedOptionIndex += 1;
     }
@@ -62,11 +68,14 @@ const interv = setInterval(() => {
     r.BeginDrawing();
     r.ClearBackground(r.RAYWHITE);
     tvm.run(); // resume VM! This will draw the next frame...
-    r.DrawText(JSON.stringify(tvm.context, null, 2), 20, 20, 5, r.BLACK)
     r.DrawText(displayString, 300, 10, 10, r.BLUE);
     options.forEach((o, i) => {
       r.DrawText(`${i} - ${localize(o.title)}`, 300, 300 + (i * 20), 10, selectedOptionIndex === i ? r.RED : r.BLUE);
     });
+    if (debug) {
+      r.DrawText(JSON.stringify(tvm.context, null, 2), 20, 1, 5, r.GRAY);
+      r.DrawText(JSON.stringify(qvm.context, null, 2), 400, 1, 5, r.GRAY);
+    }
     r.EndDrawing();
   } else {
     clearInterval(interv);

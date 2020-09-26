@@ -52,7 +52,7 @@ const interv = setInterval(() => {
     }
     selectedOptionIndex = Math.max(0, Math.min(selectedOptionIndex, options.length - 1));
 
-    if (r.IsKeyPressed(r.KEY_ENTER)) {
+    if (r.IsKeyPressed(r.KEY_ENTER) || r.IsKeyPressed(r.KEY_SPACE)) {
       if (optionPromiseCallback !== null) {
         displayString = "";
         optionPromiseCallback(options[selectedOptionIndex].id);

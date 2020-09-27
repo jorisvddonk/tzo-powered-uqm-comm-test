@@ -18,7 +18,7 @@ tvm.loadVMState(JSON.parse(fs.readFileSync("./anim.json").toString()) as TzoVMSt
 tvm.run(); // start initiation process!
 
 let debug = false;
-const cvm = new ConversationVM(r, `./speech.json`, `${base}/${alien_name}.txt`, `${base}/${alien_name}.ts`);
+const cvm = new ConversationVM(r, `./speech.json`, `${base}/${alien_name}.json`);
 const font = r.LoadFont('./res/good_neighbors_xna_0.png'); // from https://opengameart.org/content/good-neighbors-pixel-font, Public Domain
 
 const music = r.LoadMusicStream(`${base}/${alien_name}.mod`);

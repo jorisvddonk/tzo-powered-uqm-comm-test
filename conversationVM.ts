@@ -1,13 +1,13 @@
 import { getStackParams, Stack, TzoVMState } from "tzo";
 import { QuestVM, Choice } from "questmark";
-import { parseTextLocalizationFile, parseTextSynchronizationFile } from "uqm-files-parsers";
 import fs from "fs";
 import path from "path";
 import { LocalizationsMap, SynchronizationsMap } from "uqm-files-parsers/dist/interfaces";
 
 export interface ResponseItem {
   text: string,
-  lineEndsAt?: number,
+  start?: number,
+  end?: number,
 }
 
 export class ConversationVM extends QuestVM {
@@ -15,16 +15,15 @@ export class ConversationVM extends QuestVM {
   options: Choice[] = [];
   optionPromiseCallback: (number) => void = null;
   selectedOptionIndex = 0;
-  translations: LocalizationsMap = null;
-  texttimings: SynchronizationsMap = null;
   canRespond: boolean = false;
   private displayQueue: ResponseItem[] = [];
   private sound;
   private dspStartTime: number = 0;
   private basedir;
+  private dialogueStrings = {};
   r;
 
-  constructor(r, conversationVMPath: string, translationsFilePath: string, synchronizationFilePath: string) {
+  constructor(r, conversationVMPath: string, dialogueStringsFilePath: string) {
     super((body => {
       this.displayStringBuffer.push(`${body}`.trim());
     }), async choices => {
@@ -41,9 +40,8 @@ export class ConversationVM extends QuestVM {
       }
     });
     this.r = r;
-    this.basedir = path.dirname(synchronizationFilePath);
-    this.translations = parseTextLocalizationFile(fs.readFileSync(translationsFilePath).toString());
-    this.texttimings = parseTextSynchronizationFile(fs.readFileSync(synchronizationFilePath).toString());
+    this.basedir = path.dirname(dialogueStringsFilePath);
+    this.dialogueStrings = JSON.parse(fs.readFileSync(dialogueStringsFilePath).toString());
     this.loadVMState(JSON.parse(fs.readFileSync(conversationVMPath).toString()) as TzoVMState);
     this.run();
   }
@@ -68,7 +66,7 @@ export class ConversationVM extends QuestVM {
 
   localize(input: string | number) {
     let s = `${input}`;
-    const t = this.translations.get(s.trim());
+    const t = this.dialogueStrings[s.trim()];
     if (t) {
       s = t.localizedText.toString();
     }
@@ -84,19 +82,11 @@ export class ConversationVM extends QuestVM {
     this.selectedOptionIndex = 0;
     let audio;
     this.displayQueue = this.displayStringBuffer.map((text, index) => {
-      const t = this.translations.get(text);
-      const sync = this.texttimings.get(text);
+      const t = this.dialogueStrings[text];
       if (t) {
         audio = t.audioFile;
         let o = 0;
-        const lines = t.localizedText.trim().split(/\n/);
-        return lines.map((line, i) => {
-          o += sync.timings[i];
-          return {
-            text: line,
-            lineEndsAt: i < lines.length - 1 ? o : undefined
-          }
-        });
+        return t.lineTimings.map(lt => ({text: lt.line, start: lt.start, end: lt.end}))
       } else {
         return {
           text
@@ -118,25 +108,8 @@ export class ConversationVM extends QuestVM {
     if (this.displayQueue.length === 0) {
       return;
     } else {
-      // check if we have passed dspq[0]
       const offset = (this.r.GetTime() - this.dspStartTime) * 1000;
-      if (offset > this.displayQueue[0].lineEndsAt) {
-        // we have; remove it!
-        this.displayQueue.shift();
-      }
-      // deal with the last line in a displayQueue, that has no lineEndsAt, or any items without a lineEndsAt..
-      if (this.displayQueue[0].lineEndsAt === undefined) {
-        if (this.sound) { // if there is a sound for this item, then we stop when the sound stops playing.
-          if (!this.r.IsSoundPlaying(this.sound)) {
-            // sound is no longer playing, so remove the first item!
-            this.displayQueue.shift();
-          }
-        } else {
-          // ??? this.... really needs some kind of fix :P
-        }
-      }
-
-      return this.displayQueue[0];
+      return this.displayQueue.find(qI => offset >= qI.start && offset <= qI.end);
     }
   }
 

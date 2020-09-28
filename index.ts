@@ -19,7 +19,7 @@ tvm.run(); // start initiation process!
 
 let debug = false;
 const cvm = new ConversationVM(r, `./speech.json`, `${base}/${alien_name}.json`);
-const font = r.LoadFont('./res/good_neighbors_xna_0.png'); // from https://opengameart.org/content/good-neighbors-pixel-font, Public Domain
+const font = r.LoadFont(`./asking-about-flowers/fonts/${alien_name}.fon.png`);
 
 const music = r.LoadMusicStream(`${base}/${alien_name}.mod`);
 r.PlayMusicStream(music);

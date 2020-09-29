@@ -2,7 +2,7 @@
 
 This is a simple animation test. [uqm-files-parsers](https://github.com/jorisvddonk/uqm-files-parsers) is being used to parse an animation file from [UQM](http://sc2.sourceforge.net/) annotated with UQMAnimationTool animation annotations, which is then compiled to a [Tzo VM](https://github.com/jorisvddonk/tzo) program, and interpreted by the Tzo VM which in turn instructs [node-raylib](https://github.com/RobLoach/node-raylib/) to render relevant sprites when needed.
 
-At the moment, the project is hardcoded to display the Chmmr comm animations, so don't expect much practical usage of this outside of rendering that at the moment ;)
+At the moment, the project is hardcoded to build and display a (partial) implementation of a conversation with Fwiffo. The animation and conversation engine is fully working, but the animation VM bytecode compiler isn't  accurate to UQM's implementation, and the conversation VM bytecode could use a few tweaks as well.
 
 ## Running it!
 

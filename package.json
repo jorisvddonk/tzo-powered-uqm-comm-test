@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "ts-node src/index.ts",
     "build": "ts-node build_vm_code.ts",
     "build-speech": "questmark --input asking-about-flowers/questmark_comm/spathi2.md --output ./speech.json --no-run",
     "go": "npm run build && npm run build-speech && npm run start",
@@ -15,7 +15,7 @@
   "dependencies": {
     "questmark": "0.0.5",
     "raylib": "^0.6.0",
-    "tzo": "^1.0.4",
+    "tzo": "^1.0.5",
     "uqm-files-parsers": "^1.0.3"
   },
   "devDependencies": {

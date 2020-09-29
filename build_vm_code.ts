@@ -1,6 +1,5 @@
-import { Instruction, invokeFunction, pushNumber, pushString } from "tzo";
+import { Instruction, invokeFunction, pushNumber, pushString, Builder } from "tzo";
 import { parseGraphics } from "uqm-files-parsers";
-import { Builder } from "./builder";
 import fs from "fs";
 import { Animation, AnimationFrame, AnimationType } from "uqm-files-parsers/dist/interfaces";
 import "array-flat-polyfill";
@@ -168,7 +167,7 @@ graphics.animations.forEach(anim => {
   b.add([
     invokeFunction("}"),
     invokeFunction("}") // end exclusive animation activity check
-  ]); 
+  ]);
 });
 
 // main animation loop's DISPLAY FUNCTIONS:

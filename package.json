@@ -8,7 +8,8 @@
     "build": "ts-node build_vm_code.ts",
     "build-speech": "questmark --input asking-about-flowers/questmark_comm/spathi2.md --output ./speech.json --no-run",
     "go": "npm run build && npm run build-speech && npm run start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ts-node": "ts-node"
   },
   "author": "",
   "license": "MIT",

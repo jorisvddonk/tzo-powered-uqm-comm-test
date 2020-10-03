@@ -25,7 +25,7 @@ graphics.animations.forEach(anim => {
     pushNumber(0),
     pushString(`anim_${anim.name}_index`),
     invokeFunction("setContext"),
-    pushNumber(anim.type === AnimationType.BACKGROUND ? 1 : 0),
+    pushNumber(anim.type === AnimationType.BACKGROUND ? -1 : 0), // 1: draw. 0: do not draw. -1: draw, but disable after drawing
     pushString(`anim_${anim.name}_active`),
     invokeFunction("setContext")
   ]);
@@ -67,6 +67,11 @@ graphics.animations.forEach(anim => {
     invokeFunction("not"),
     invokeFunction("jgz"),
     invokeFunction("{"),
+  ]);
+
+  // enable animation if needed
+  b.add(anim.type === AnimationType.BACKGROUND ? [] : [
+    // background animations should never get scheduled back on again!
     // randomly enable the animation
     // TODO: actually use the animation timing and scheduler here!
     pushNumber(2),
@@ -96,7 +101,7 @@ graphics.animations.forEach(anim => {
       pushNumber(-1), // reset to -1 (will be incremented to 0 later)
       pushString(`anim_${anim.name}_index`),
       invokeFunction("setContext"),
-      pushNumber(0), // disable animation
+      pushNumber(-1), // disable animation
       pushString(`anim_${anim.name}_active`),
       invokeFunction("setContext"),
       invokeFunction("}"),
@@ -149,11 +154,18 @@ graphics.animations.forEach(anim => {
       pushNumber(1), // reverse
       pushString(`anim_${anim.name}_yy_direction`),
       invokeFunction("setContext"),
-      pushNumber(0), // disable animation (only when the yo-yo finished)
+      pushNumber(-1), // disable animation (only when the yo-yo finished)
       pushString(`anim_${anim.name}_active`),
       invokeFunction("setContext"),
       invokeFunction("}"),
-      // add yy direction to index
+      // add yy direction to index, unless we just disabled the animation
+      pushString(`anim_${anim.name}_active`),
+      invokeFunction("getContext"),
+      pushNumber(-1),
+      invokeFunction("eq"),
+      invokeFunction("not"),
+      invokeFunction("jgz"),
+      invokeFunction("{"),
       pushString(`anim_${anim.name}_yy_direction`),
       invokeFunction("getContext"),
       pushString(`anim_${anim.name}_index`),
@@ -161,6 +173,7 @@ graphics.animations.forEach(anim => {
       invokeFunction("+"),
       pushString(`anim_${anim.name}_index`),
       invokeFunction("setContext"),
+      invokeFunction("}"),
     ])
   }
 
@@ -173,10 +186,11 @@ graphics.animations.forEach(anim => {
 // main animation loop's DISPLAY FUNCTIONS:
 function displayImageMaybe(anim: Animation, frame: AnimationFrame) { // convenience function
   b.add([
-    pushString(`anim_${anim.name}_active`),
+    pushString(`anim_${anim.name}_active`), // NOTE: will be displayed if either 1 or -1! (-1 means: it will draw, but disable next!)
     invokeFunction("getContext"),
-    pushNumber(1),
+    pushNumber(0),
     invokeFunction("eq"),
+    invokeFunction("not"),
     invokeFunction("jgz"),
     invokeFunction("{"),
     pushString(`anim_${anim.name}_index`),
@@ -191,6 +205,9 @@ function displayImageMaybe(anim: Animation, frame: AnimationFrame) { // convenie
     invokeFunction("}"),
   ]);
 }
+b.add([
+  invokeFunction("beginDraw")
+]);
 graphics.animations.forEach(anim => {
   anim.frames.forEach(frame => {
     displayImageMaybe(anim, frame);
@@ -198,6 +215,28 @@ graphics.animations.forEach(anim => {
 });
 
 // main anim loop STOP:
+b.add([
+  invokeFunction("endDraw")
+]);
+
+// stop all animations that should have gotten stopped, but only after they finished drawing:
+graphics.animations.forEach(anim => {
+  b.add([
+    pushString(`anim_${anim.name}_active`),
+    invokeFunction("getContext"),
+    pushNumber(-1),
+    invokeFunction("eq"),
+    invokeFunction("jgz"),
+    invokeFunction("{"),
+    pushNumber(0),
+    pushString(`anim_${anim.name}_active`),
+    invokeFunction("setContext"),
+    invokeFunction("}"),
+  ]);
+});
+
+
+// main anim loop END:
 b.add([
   invokeFunction("pause"), // pause at end of loop
   pushString("mainAnimationLoop"), // ensure that when we resume next, we restart the loop...

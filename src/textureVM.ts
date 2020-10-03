@@ -1,4 +1,5 @@
 import { getStackParams, Stack, VM } from "tzo";
+import { screenWidth, screenHeight } from "./constants";
 
 
 export interface Texture {
@@ -11,6 +12,7 @@ export interface Texture {
 export class TextureVM extends VM {
   private r = null;
   textures: Texture[] = [];
+  texture = undefined;
 
   constructor(r, base) {
     super({}, {
@@ -31,13 +33,25 @@ export class TextureVM extends VM {
         } else {
           console.warn(`frame not found: ${frameIndex}`);
         }
+      },
+      "beginDraw": () => {
+        this.r.BeginTextureMode(this.texture);
+      },
+      "endDraw": () => {
+        this.r.EndTextureMode();
+        this.r.DrawTextureRec(this.texture.texture, this.r.Rectangle(0, 0, this.texture.texture.width, -this.texture.texture.height), this.r.Vector2(0, 0), this.r.WHITE);
       }
     });
     this.r = r;
+    this.texture = r.LoadRenderTexture(screenWidth, screenHeight);
   }
 
   drawTex(t: Texture) {
     const scale = 3;
     this.r.DrawTextureEx(t.tex, this.r.Vector2(0 - (t.hotspot_x * scale), 0 - (t.hotspot_y * scale)), 0, scale, this.r.WHITE);
+  }
+
+  destroy() {
+    this.r.UnloadRenderTexture(this.texture);
   }
 }

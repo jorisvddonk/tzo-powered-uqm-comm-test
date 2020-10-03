@@ -3,12 +3,11 @@ import { getStackParams, Stack, TzoVMState, VM } from "tzo";
 import fs from "fs";
 import { TextureVM } from "./textureVM";
 import { ConversationVM } from "./conversationVM";
+import { screenWidth, screenHeight } from "./constants";
 
 
 const alien_name = "spathi";
 const base = `./asking-about-flowers/comm/${alien_name}`;
-const screenWidth = 800;
-const screenHeight = 450;
 r.InitWindow(screenWidth, screenHeight, "Tzo powered Animation Test");
 r.SetTargetFPS(30);
 r.InitAudioDevice();
@@ -91,6 +90,7 @@ const interv = setInterval(() => {
     r.EndDrawing();
   } else {
     clearInterval(interv);
+    tvm.destroy();
     r.CloseWindow();        // Close window and OpenGL context
     r.CloseAudioDevice();
   }
